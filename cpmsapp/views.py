@@ -35,10 +35,9 @@ def student_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-
-            return redirect('stud_dashboard')  # Replace 'success_url' with your desired success URL
+            request.session['username'] = username
+            return redirect('stud_dashboard')  
         else:
-            # Return an 'invalid login' error message.
             return render(request, 'cpmsapp/stulogin.html', {'error_message': 'Invalid username or password'})
     else:
         return render(request, 'cpmsapp/stulogin.html')
@@ -50,8 +49,8 @@ def company_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-
-            return redirect('success_url')  # Replace 'success_url' with your desired success URL
+            request.session['c_username'] = username
+            return redirect('comp_dashboard')  # Replace 'success_url' with your desired success URL
         else:
             return render(request, 'cpmsapp/complogin.html', {'error_message': 'Invalid username or password'})
     else:

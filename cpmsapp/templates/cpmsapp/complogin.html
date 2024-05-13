@@ -11,6 +11,7 @@
     <div class="container">
         <h2>Company Login</h2>
         <form id="loginForm" method="POST">
+            {% csrf_token %}
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
 
