@@ -1,0 +1,77 @@
+<!-- dashboard/templates/dashboard/dashboard.html -->
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{% static 'users/studdash.css' %}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="options-panel">
+            <div class="logo">
+                <img src="https://www.sctce.ac.in/images/SREE%20CHITRA%20THIRUNAL.jpg" alt="College Logo">
+            </div>
+            <ul>
+                <li><a href="#" id="dash">Dashboard</a></li>
+                <li><a href="#" id="apply">Apply for Jobs</a></li>
+                <li><a href="#" id="result">Results</a></li>
+                <li><a href="#" id="notifications-link">Notifications</a></li>
+            </ul>
+        </div>
+        <div class="student-details">
+            <div class="student-info">
+                <h2>Student Details</h2>
+                <div class="info-box">
+                    <div class="label">Name:</div>
+                    <div class="value"> {{ student.name }} </div>  
+                </div>
+                <div class="info-box">
+                    <div class="label">University Reg. No:</div>
+                    <div class="value">{{ student.student_id }}</div>  
+                </div>
+                <div class="info-box">
+                    <div class="label">Email:</div>
+                    <div class="value">{{ student.email }}</div>  
+                </div>
+                <div class="info-box">
+                    <div class="label">Department:</div>
+                    <div class="value">{{ student.department }}</div> 
+                </div>
+                <div class="info-box">
+                    <div class="label">CGPA:</div>
+                    <div class="value">{{ student.cgpa }}</div>  
+                </div>
+                
+                <button class="cv-button">Upload/Update CV</button>
+            </div>
+            <div class="student-photo">
+                <img src="{{ student.photo_url }}" alt="Student Photo">  <!-- Display student's photo -->
+                <button class="logout-button" id="logout-button">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Popup HTML -->
+    <div class="notification-popup" id="notification-popup">
+        <span class="close" onclick="closeNotification()">&times;</span>
+        <h2>Notifications</h2>
+        <div class="notification-content">
+            <div class="notification">
+                <h4>Notification 1</h4>
+                <p>Details of notification 1.</p>
+            </div>
+            <div class="notification">
+                <h4>Notification 2</h4>
+                <p>Details of notification 2.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'dashboard/studdash.js' %}"></script>
+</body>
+</html>

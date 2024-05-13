@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Registration</title>
+    <link rel="stylesheet" href="{% static 'users/compregform.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h2>Company Registration</h2>
+        <form action="register_company/" method="POST">
+            {% csrf_token %}
+            <label for="company_name">Company Name:</label>
+            <input type="text" id="company_name" name="company_name" required>
+
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location" required>
+
+            <label for="establishment_year">Year of Establishment (yyyy/mm/dd):</label>
+            <input type="text" id="establishment_year" name="establishment_year" required pattern="\d{4}-\d{2}-\d{2}" title="Please enter the date in yyyy-mm-dd format" placeholder="yyyy-mm-dd">
+
+            <label for="industry_type">Type of Industry:</label>
+            <select id="industry_type" name="industry_type" required>
+                <option value="1">IT</option>
+                <option value="2">Manufacturing</option>
+                <option value="3">Finance</option>
+                <option value="4">Healthcare</option>
+            </select>
+            
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</body>
+</html>
+

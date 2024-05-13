@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="results.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="options-panel">
+            <div class="logo">
+                <img src="https://www.sctce.ac.in/images/SREE%20CHITRA%20THIRUNAL.jpg" alt="College Logo">
+            </div>
+            <ul>
+                <li><a href="#" id="dashb">Dashboard</a></li>
+                <li><a href="#" id="applyj">Apply for Jobs</a></li>
+                <li><a href="#" id="result">Results</a></li>
+                <li><a href="#" id="notifications-link">Notifications</a></li>
+            </ul>
+        </div>
+        <button class="logout-button" id="logout-button">Logout</button> 
+        <div class="student-details">
+            <h1>RESULTS</h1>
+            <div class="student-info">
+                <!-- Result for Company: XYZ Corporation -->
+                <div class="result">
+                    <h3>Company: H&R BLOCK</h3>
+                    <p>Congratulations!</p>
+                    <p>Position: Junior Software Developer</p>
+                    <p>Location: Trivandrum</p>
+                    <p>Start Date: June 1, 2024</p>
+                    <p>Salary: $65,000 per annum</p>
+                </div>
+            </div>
+            <div class="student-info">
+                <!-- Result for Company: ABC Enterprises -->
+                <div class="result">
+                    <h3>Company:UST Global </h3>
+                    <p>We regret to inform you that we have decided not to move forward with your application at this time</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Popup HTML -->
+    <div class="notification-popup" id="notification-popup">
+        <span class="close" onclick="closeNotification()">&times;</span>
+        <h2>Notifications</h2>
+        <div class="notification-content">
+            <div class="notification">
+                <h4>Notification 1</h4>
+                <p>Details of notification 1.</p>
+            </div>
+            <div class="notification">
+                <h4>Notification 2</h4>
+                <p>Details of notification 2.</p>
+            </div>
+        </div>
+    </div>
+    <script src="results.js"></script>
+</body>
+</html>
+ 
