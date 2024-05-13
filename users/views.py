@@ -1,11 +1,12 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-from .models import Student,Company
+from .models import JobPosting, Student,Company
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import StudentSerializers, CompanySerializers
+from .serializers import JobSerializers, StudentSerializers, CompanySerializers
 from django.contrib.auth.models import User
 
 class StudentUploadForm(APIView):
@@ -23,6 +24,17 @@ class CompanyUploadForm(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class JobUploadForm(APIView):
+    def post(self, request):
+        serializer = JobSerializers(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+def logout(request):
+    return render(request, 'users/logout.html')
 
 def student_reg(request):
     if request.method == 'POST':
@@ -93,9 +105,55 @@ def compreg_details(request):
     return render(request, 'users/compregform.html')
 
 def stud_dashboard(request):
-    student_id = request.user.id
-    student_data = Student.objects.get(id=student_id)
-    context = {
-        'student_data': student_data
-    }
-    return render(request, 'users/studdash.html',context)
+    username = request.session.get('username')
+    if username:
+        student_data = get_object_or_404(Student, student_id=username)
+        context = {
+            'student_data': student_data
+        }
+        return render(request, 'users/studdash.html', context)
+    else:
+        return HttpResponse("Username not found in session")
+    
+def stud_apply_job(request):
+    return render(request, 'users/applyjob.html')
+
+def stud_results(request):
+    return render(request, 'users/results.html')
+
+def comp_dashboard(request):
+    if request.user.is_authenticated:
+        username = request.user.username
+    if username:
+        company_data = get_object_or_404(Company, company_id=username)
+        context = {
+            'company_data': company_data
+        }
+        return render(request, 'users/companydash.html', context)
+    else:
+        return HttpResponse("Username not found in session")
+    
+def apply_post(request):
+    if request.user.is_authenticated:
+        username = request.user.username
+    if request.method == 'POST':
+        job_title = request.POST.get('job_title')
+        job_requirement = request.POST.get('job_requirement')
+        job_type = request.POST.get('job_type')
+        job_package = request.POST.get('job_package')
+        last_date = request.POST.get('last_date')
+        job_package = request.POST.get('job_package')
+        
+        
+        new_job = JobPosting.objects.create(
+            company_id = username,
+            job_title=job_title,
+            job_requirement=job_requirement,
+            job_type=job_type,
+            job_package=job_package,
+            last_date=last_date
+        )
+        messages.success(request, 'Job Posted successfully!')
+        return redirect('comp_dashboard')  # Redirect to a success page
+    return render(request, 'users/comp_jobpost.html')
+

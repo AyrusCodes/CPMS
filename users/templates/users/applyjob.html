@@ -1,10 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Job Postings</title>
-    <link rel="stylesheet" href="applyjob.css">
+    <link rel="stylesheet" href="{% static 'users/applyjob.css' %}">
 </head>
 <body>
     <div class="dashboard-container">
@@ -13,9 +14,9 @@
                 <img src="https://www.sctce.ac.in/images/SREE%20CHITRA%20THIRUNAL.jpg" alt="College Logo">
             </div>
             <ul>
-                <li><a href="#" id="dash">Dashboard</a></li>
-                <li><a href="#" id="apply">Apply for Jobs</a></li>
-                <li><a href="#" id="result">Results</a></li>
+                <li><a href="{% url 'stud_dashboard' %}" id="dash">Dashboard</a></li>
+                <li><a href="{% url 'stud_apply_job' %}" id="apply">Apply for Jobs</a></li>
+                <li><a href="{% url 'stud_results' %}" id="result">Results</a></li>
                 <li><a href="#" id="notifications-link">Notifications</a></li>
             </ul>
         </div>
@@ -37,41 +38,41 @@
         <div class="job-postings">
             <h2>Job Postings</h2>
             <form action="#" method="POST">
+                {% csrf_token %}
                 <div class="job-box">
                     <input type="checkbox" id="job1" name="job1">
                     <label for="job1">Software Engineer</label>
                     <p>Company: Global Solutions</p>
                     <p>Location: Chennai, India</p>
-                    <p>Type:On-Site.Full-time</p>
-                    <p>Package:$80,000/year</p>
-                    <p>Last Date to Apply:2024-06-15</p>
+                    <p>Type: On-Site.Full-time</p>
+                    <p>Package: $80,000/year</p>
+                    <p>Last Date to Apply: 2024-06-15</p>
                 </div>
                 <div class="job-box">
                     <input type="checkbox" id="job2" name="job2">
                     <label for="job2">Backend Developer</label>
                     <p>Company: IBM</p>
                     <p>Location: Trivandrum, India</p>
-                    <p>Type:Hybrid.Full-time</p>
-                    <p>Package:$50,000/year </p>
-                    <p>Last Date to Apply:2024-07-20</p>
+                    <p>Type: Hybrid.Full-time</p>
+                    <p>Package: $50,000/year</p>
+                    <p>Last Date to Apply: 2024-07-20</p>
                 </div>
                 <div class="job-box">
                     <input type="checkbox" id="job3" name="job3">
                     <label for="job3">Software Engineer</label>
                     <p>Company: UST Global</p>
                     <p>Location: Trivandrum, India</p>
-                    <p>Type:On-site.Full-time.Entry level</p>
-                    <p>Package:$40,000</p>
-                    <p>Last Date to Apply:2024-06-15</p>
+                    <p>Type: On-site.Full-time.Entry level</p>
+                    <p>Package: $40,000</p>
+                    <p>Last Date to Apply: 2024-06-15</p>
                 </div>
-            <!-- Add more job postings as needed -->
+                <!-- Add more job postings as needed -->
                 <button type="submit">Apply</button>
             </form>
         </div>
-</div>
+    </div>
 
-
-<button class="logout-button" id="logout-button">Logout</button>
-<script src="applyjob.js"></script>
+    {% comment %} <button class="logout-button" id="logout-button" href="{% url 'logout' %}">Logout</button> {% endcomment %}
+    <script src="{% static 'users/applyjob.js' %}"></script>
 </body>
 </html>

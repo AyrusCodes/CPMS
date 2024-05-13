@@ -1,7 +1,4 @@
-<!-- dashboard/templates/dashboard/dashboard.html -->
-
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,9 +14,9 @@
                 <img src="https://www.sctce.ac.in/images/SREE%20CHITRA%20THIRUNAL.jpg" alt="College Logo">
             </div>
             <ul>
-                <li><a href="#" id="dash">Dashboard</a></li>
-                <li><a href="#" id="apply">Apply for Jobs</a></li>
-                <li><a href="#" id="result">Results</a></li>
+                <li><a href="{% url 'stud_dashboard' %}" id="dash">Dashboard</a></li>
+                <li><a href="{% url 'stud_apply_job' %}" id="apply">Apply for Jobs</a></li>
+                <li><a href="{% url 'stud_results' %}" id="result">Results</a></li>
                 <li><a href="#" id="notifications-link">Notifications</a></li>
             </ul>
         </div>
@@ -50,8 +47,10 @@
                 <button class="cv-button">Upload/Update CV</button>
             </div>
             <div class="student-photo">
-                <img src="{{ student.photo_url }}" alt="Student Photo">  <!-- Display student's photo -->
-                <button class="logout-button" id="logout-button">Logout</button>
+                <img src="{{ student.photo }}" alt="Student Photo">  
+                <a href="{% url 'logout' %}">
+                    <button class="logout-button" id="logout-button">Logout</button>
+                </a>
             </div>
         </div>
     </div>
@@ -72,6 +71,6 @@
         </div>
     </div>
 
-    <script src="{% static 'dashboard/studdash.js' %}"></script>
+    <script src="{% static 'users/studdash.js' %}"></script>
 </body>
 </html>

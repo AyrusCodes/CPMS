@@ -21,6 +21,7 @@ class Student(models.Model):
         return self.name
 
 class Company(models.Model):
+    company_id = models.CharField(max_length=20, unique=True, null=True)
     company_name = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
     establishment_year = models.DateField()
@@ -28,3 +29,15 @@ class Company(models.Model):
 
     def __str__(self):
         return self.company_name
+    
+class JobPosting(models.Model):
+    job_id = models.AutoField(primary_key=True)
+    company_id = models.ForeignKey(Company, on_delete=models.CASCADE)
+    job_title = models.CharField(max_length=100)
+    job_requirement = models.CharField(max_length=1000)
+    job_type = models.CharField(max_length=100)
+    job_package = models.CharField(max_length=100)
+    last_date = models.DateTimeField()
+
+    def __str__(self):
+        return self.job_title

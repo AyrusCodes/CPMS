@@ -14,9 +14,9 @@ document.getElementById("notifications-link").addEventListener("click", function
     showNotification();
 });
 
-document.getElementById("logout-button").addEventListener("click", function() {
-    window.location.href = "stuloginfinal.html"; 
-});
+// document.getElementById("logout-button").addEventListener("click", function() {
+//     window.location.href = "logout.html"; 
+// });
 
 document.getElementById("dashb").addEventListener("click", function() {
     window.location.href = "studdash.html"; 

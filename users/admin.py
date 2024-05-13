@@ -7,8 +7,8 @@ class StudentAdmin(admin.ModelAdmin):
     list_filter = ['department']  
 
 class CompanyAdmin(admin.ModelAdmin):
-    list_display = ['company_name', 'location', 'establishment_year','industry_type']  
-    search_fields = ['company_name', 'location'] 
+    list_display = ['company_id','company_name', 'location', 'establishment_year','industry_type']  
+    search_fields = ['company_id','company_name', 'location'] 
     list_filter = ['industry_type'] 
 
 admin.site.register(Department)

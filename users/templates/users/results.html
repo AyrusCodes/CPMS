@@ -1,10 +1,12 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="results.css">
+    <link rel="stylesheet" href="{% static 'users/results.css' %}">
 </head>
 <body>
     <div class="dashboard-container">
@@ -13,13 +15,13 @@
                 <img src="https://www.sctce.ac.in/images/SREE%20CHITRA%20THIRUNAL.jpg" alt="College Logo">
             </div>
             <ul>
-                <li><a href="#" id="dashb">Dashboard</a></li>
-                <li><a href="#" id="applyj">Apply for Jobs</a></li>
-                <li><a href="#" id="result">Results</a></li>
+                <li><a href="{% url 'stud_dashboard' %}" id="dashb">Dashboard</a></li>
+                <li><a href="{% url 'stud_apply_job' %}" id="applyj">Apply for Jobs</a></li>
+                <li><a href="{% url 'stud_results' %}" id="result">Results</a></li>
                 <li><a href="#" id="notifications-link">Notifications</a></li>
             </ul>
         </div>
-        <button class="logout-button" id="logout-button">Logout</button> 
+        {% comment %} <button class="logout-button" id="logout-button" href="{% url 'logout' %}">Logout</button>  {% endcomment %}
         <div class="student-details">
             <h1>RESULTS</h1>
             <div class="student-info">
@@ -36,7 +38,7 @@
             <div class="student-info">
                 <!-- Result for Company: ABC Enterprises -->
                 <div class="result">
-                    <h3>Company:UST Global </h3>
+                    <h3>Company: UST Global</h3>
                     <p>We regret to inform you that we have decided not to move forward with your application at this time</p>
                 </div>
             </div>
@@ -58,7 +60,6 @@
             </div>
         </div>
     </div>
-    <script src="results.js"></script>
+    <script src="{% static 'users/results.js' %}"></script>
 </body>
 </html>
- 

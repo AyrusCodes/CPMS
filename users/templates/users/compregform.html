@@ -12,6 +12,9 @@
         <h2>Company Registration</h2>
         <form action="register_company/" method="POST">
             {% csrf_token %}
+            <label for="company_id">Company ID(Username):</label>
+            <input type="text" id="company_id" name="company_id" required>
+
             <label for="company_name">Company Name:</label>
             <input type="text" id="company_name" name="company_name" required>
 

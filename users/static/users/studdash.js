@@ -15,7 +15,7 @@ document.getElementById("notifications-link").addEventListener("click", function
 });
 
 document.getElementById("logout-button").addEventListener("click", function() {
-    window.location.href = "stuloginfinal.html"; 
+    window.location.href = "users/logout.html"; 
 });
 
 document.getElementById("apply").addEventListener("click", function() {
