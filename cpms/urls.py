@@ -29,6 +29,8 @@ urlpatterns = [
     path('dashboard/', user_views.stud_dashboard, name='stud_dashboard'),
     path('dashboard/upload_cv/', user_views.UploadCV.as_view()),
     path('dashboard/stud_apply_job', user_views.stud_apply_job, name='stud_apply_job'),
+    path('dashboard/apply_job/', user_views.CandidatesApply.as_view()),
+
     path('dashboard/stud_results', user_views.stud_results, name='stud_results'),
     path('dashboard/logout', user_views.logout, name='logout'),
 
@@ -38,7 +40,10 @@ urlpatterns = [
     path('cdashboard/', user_views.comp_dashboard, name='comp_dashboard'),
     path('cdashboard/apply_post', user_views.apply_post, name='apply_post'),
     path('cdashboard/add_post/', user_views.ApplyPost.as_view()),
+    path('cdashboard/posted_jobs', user_views.posted_jobs, name='posted_jobs'),
+
     path('cdashboard/logout', user_views.logout, name='logout'),
+    path('admin_tools_stats/', include('admin_tools_stats.urls')),
     path('', include('cpmsapp.urls')),
 
  
