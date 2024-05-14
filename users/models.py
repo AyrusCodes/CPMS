@@ -12,6 +12,7 @@ class Student(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    batch = models.CharField(max_length=50, blank=True)
     cgpa = models.DecimalField(max_digits=3, decimal_places=2)
     cv = models.FileField(upload_to='cv_files/a.txt', null=True)
     date_of_birth = models.DateField(null=True)
@@ -24,7 +25,7 @@ class Company(models.Model):
     company_id = models.CharField(max_length=20, unique=True, null=True)
     company_name = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
-    establishment_year = models.DateField()
+    establishment_year = models.CharField(max_length=4)
     industry_type = models.CharField(max_length=100)
 
     def __str__(self):

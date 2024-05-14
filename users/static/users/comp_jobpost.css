@@ -15,8 +15,9 @@ body {
 }
 
 .company-details {
-    width: 15%;
+    width: 18%;
     padding: 20px;
+    font-style: bold;
     background-color: #f9f9f9; /* Different background color for company details */
 }
 

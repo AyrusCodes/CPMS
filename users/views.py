@@ -14,7 +14,8 @@ class StudentUploadForm(APIView):
         serializer = StudentSerializers(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            messages.success(request, 'Student registered successfully!')
+            return redirect('student_login')
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CompanyUploadForm(APIView):
@@ -22,7 +23,8 @@ class CompanyUploadForm(APIView):
         serializer = CompanySerializers(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            messages.success(request, 'Company registered successfully!')
+            return redirect('company_login')
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class JobUploadForm(APIView):
@@ -55,6 +57,7 @@ def studreg_details(request):
         dob = request.POST.get('dob')
         email = request.POST.get('email')
         department = request.POST.get('department')
+        batch = request.POST.get('batch')
         cgpa = request.POST.get('cgpa')
         cv = request.FILES.get('cv')  
         photo = request.FILES.get('photo')  
@@ -64,6 +67,7 @@ def studreg_details(request):
             dob=dob,
             email=email,
             department=department,
+            batch=batch,
             cgpa=cgpa,
             cv=cv,
             photo=photo
@@ -105,15 +109,22 @@ def compreg_details(request):
     return render(request, 'users/compregform.html')
 
 def stud_dashboard(request):
-    username = request.session.get('username')
-    if username:
-        student_data = get_object_or_404(Student, student_id=username)
-        context = {
-            'student_data': student_data
-        }
+    if request.user.is_authenticated:
+        username = request.user.username
+        student = Student.objects.get(student_id=username)
+        context = {'student': student}
         return render(request, 'users/studdash.html', context)
     else:
         return HttpResponse("Username not found in session")
+    
+def upload_cv(request):
+    if request.method == 'POST' and request.FILES.get('cv'):
+        cv_file = request.FILES['cv']
+        student = request.user.username  # Assuming student is authenticated
+        student.cv = cv_file
+        student.save()
+        messages.success(request, 'CV uploaded successfully!')
+    return redirect('stud_dashboard')
     
 def stud_apply_job(request):
     return render(request, 'users/applyjob.html')
@@ -124,11 +135,8 @@ def stud_results(request):
 def comp_dashboard(request):
     if request.user.is_authenticated:
         username = request.user.username
-    if username:
-        company_data = get_object_or_404(Company, company_id=username)
-        context = {
-            'company_data': company_data
-        }
+        company = Company.objects.get(company_id=username)
+        context = {'company': company}
         return render(request, 'users/companydash.html', context)
     else:
         return HttpResponse("Username not found in session")
@@ -136,6 +144,7 @@ def comp_dashboard(request):
 def apply_post(request):
     if request.user.is_authenticated:
         username = request.user.username
+        company = Company.objects.get(company_id=username)
     if request.method == 'POST':
         job_title = request.POST.get('job_title')
         job_requirement = request.POST.get('job_requirement')
@@ -143,7 +152,6 @@ def apply_post(request):
         job_package = request.POST.get('job_package')
         last_date = request.POST.get('last_date')
         job_package = request.POST.get('job_package')
-        
         
         new_job = JobPosting.objects.create(
             company_id = username,
@@ -155,5 +163,5 @@ def apply_post(request):
         )
         messages.success(request, 'Job Posted successfully!')
         return redirect('comp_dashboard')  # Redirect to a success page
-    return render(request, 'users/comp_jobpost.html')
+    return render(request, 'users/comp_jobpost.html', {'company': company})
 

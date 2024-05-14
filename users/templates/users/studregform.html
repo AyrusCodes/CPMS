@@ -18,8 +18,8 @@
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
 
-            <label for="dob">Date of Birth (yyyy/mm/dd):</label>
-            <input type="text" id="dob" name="dob" required pattern="\d{4}-\d{2}-\d{2}" title="Please enter the date in yyyy-mm-dd format" placeholder="yyyy-mm-dd">
+            <label for="date_of_birth">Date of Birth (yyyy/mm/dd):</label>
+            <input type="text" id="date_of_birth" name="date_of_birth" required pattern="\d{4}-\d{2}-\d{2}" title="Please enter the date in yyyy-mm-dd format" placeholder="yyyy-mm-dd">
 
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
@@ -30,6 +30,13 @@
                 <option value="2">Electronics and Communication Engineering</option>
                 <option value="3">Mechanical Engineering</option>
                 <option value="4">Biotechnology Engineering</option>
+            </select>
+
+            <label for="batch">Batch:</label>
+            <select id="batch" name="batch" required>
+                <option value="1">2020-2024</option>
+                <option value="2">2021-2025</option>
+                <option value="3">2022-2026</option>
             </select>
 
             <label for="cgpa">CGPA:</label>

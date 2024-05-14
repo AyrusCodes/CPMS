@@ -4,7 +4,7 @@ from.models import Student,Company,JobPosting
 class StudentSerializers(serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = ['student_id', 'name', 'date_of_birth', 'email', 'department', 'cgpa', 'cv','photo']
+        fields = ['student_id', 'name', 'date_of_birth', 'email', 'department', 'batch' 'cgpa', 'cv', 'photo']
 
 class CompanySerializers(serializers.ModelSerializer):
     class Meta:

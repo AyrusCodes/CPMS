@@ -21,20 +21,20 @@
             <label for="location">Location:</label>
             <input type="text" id="location" name="location" required>
 
-            <label for="establishment_year">Year of Establishment (yyyy/mm/dd):</label>
-            <input type="text" id="establishment_year" name="establishment_year" required pattern="\d{4}-\d{2}-\d{2}" title="Please enter the date in yyyy-mm-dd format" placeholder="yyyy-mm-dd">
+            <label for="establishment_year">Year of Establishment:</label>
+            <input type="text" id="establishment_year" name="establishment_year" >
 
             <label for="industry_type">Type of Industry:</label>
             <select id="industry_type" name="industry_type" required>
-                <option value="1">IT</option>
-                <option value="2">Manufacturing</option>
-                <option value="3">Finance</option>
-                <option value="4">Healthcare</option>
+                <option value="1" data-industry="IT">IT</option>
+                <option value="2" data-industry="Manufacturing">Manufacturing</option>
+                <option value="3" data-industry="Finance">Finance</option>
+                <option value="4" data-industry="Healthcare">Healthcare</option>
             </select>
-            
             <button type="submit">Register</button>
         </form>
     </div>
+    <script src="{% static 'users/compregform.js' %}"></script>
 </body>
 </html>
 
