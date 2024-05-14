@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 from users import views as user_views
 
 
@@ -25,6 +27,7 @@ urlpatterns = [
     path('student_login/student_reg/', user_views.student_reg, name='student_reg'),
     path('student_login/student_reg/studreg_details', user_views.studreg_details, name='studreg_details'),
     path('dashboard/', user_views.stud_dashboard, name='stud_dashboard'),
+    path('dashboard/upload_cv', user_views.upload_cv, name='upload_cv'),
     path('dashboard/stud_apply_job', user_views.stud_apply_job, name='stud_apply_job'),
     path('dashboard/stud_results', user_views.stud_results, name='stud_results'),
     path('dashboard/logout', user_views.logout, name='logout'),
@@ -40,4 +43,4 @@ urlpatterns = [
     path('', include('cpmsapp.urls')),
 
  
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
