@@ -33,7 +33,7 @@ class Company(models.Model):
     
 class JobPosting(models.Model):
     job_id = models.AutoField(primary_key=True)
-    company_id = models.ForeignKey(Company, on_delete=models.CASCADE)
+    company_id = models.CharField(max_length=20, unique=True, null=True)
     job_title = models.CharField(max_length=100)
     job_requirement = models.CharField(max_length=1000)
     job_type = models.CharField(max_length=100)

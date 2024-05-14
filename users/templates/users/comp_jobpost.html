@@ -11,16 +11,15 @@
     <div class="container">
         <div class="company-details">
             <h2>Company Details</h2>
-            <p><strong>Company Name:</strong> {{ company.company_name }}</p>
-            <p><strong>Location:</strong>{{ company.location }}</p>
-            <p><strong>Year of Establishment:</strong> {{ company.establishment_year }}</p>
-            <p><strong>Type of Industry:</strong> {{ company.industry_type }} </p>
-            <button onclick="viewNotifications()">View Notifications</button>
+            <p><strong>Company Name  : {{ company.company_name }} </p> </strong>
+            <p><strong>Location  : {{ company.location }} </p></strong>
+            <p><strong>Year of Establishment  : {{ company.establishment_year }}</p></strong>
+            <p><strong>Type of Industry  : {{ company.industry_type }} </p></strong>
         </div>
 
         <div class="job-postings">
             <h2>Add Job Posting</h2>
-            <form action="add_job/" method="POST">
+            <form action="add_post/" method="POST">
                 {% csrf_token %}
                 <label for="job_title">Job Title:</label>
                 <input type="text" id="job_title" name="job_title" required>
@@ -45,23 +44,5 @@
         </div>
     </div>
 
-    <div id="notificationsModal" class="modal">
-        <!-- Notifications modal content -->
-    </div>
-
-    <script>
-        function viewNotifications() {
-            document.getElementById("notificationsModal").style.display = "block";
-        }
-
-        function closeModal() {
-            document.getElementById("notificationsModal").style.display = "none";
-        }
-
-        function deleteJobPosting(jobId) {
-            var listItem = document.getElementById(jobId);
-            listItem.parentNode.removeChild(listItem);
-        }
-    </script>
 </body>
 </html>

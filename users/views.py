@@ -18,6 +18,22 @@ class StudentUploadForm(APIView):
             return redirect('student_login')
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class UploadCV(APIView):
+    def post(self, request):
+        try:
+            username = request.user.username
+            student = Student.objects.get(student_id=username)
+        except Student.DoesNotExist:
+            return Response({'error': 'Student not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = StudentSerializers(student, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            message = {'success': 'CV uploaded successfully!'}
+            return redirect('stud_dashboard')
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class CompanyUploadForm(APIView):
     def post(self, request):
         serializer = CompanySerializers(data=request.data)
@@ -26,15 +42,7 @@ class CompanyUploadForm(APIView):
             messages.success(request, 'Company registered successfully!')
             return redirect('company_login')
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-class JobUploadForm(APIView):
-    def post(self, request):
-        serializer = JobSerializers(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+      
 def logout(request):
     return render(request, 'users/logout.html')
 
@@ -78,6 +86,22 @@ def studreg_details(request):
     else:
         return render(request, 'users/studregform.html')
 
+def stud_dashboard(request):
+    if request.user.is_authenticated:
+        username = request.user.username
+        student = Student.objects.get(student_id=username)
+        context = {'student': student}
+        return render(request, 'users/studdash.html', context)
+    else:
+        return HttpResponse("Username not found in session")
+    
+
+def stud_apply_job(request):
+    return render(request, 'users/applyjob.html')
+
+def stud_results(request):
+    return render(request, 'users/results.html')
+
 def comp_reg(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -108,30 +132,6 @@ def compreg_details(request):
         return redirect('company_login')  # Redirect to a success page
     return render(request, 'users/compregform.html')
 
-def stud_dashboard(request):
-    if request.user.is_authenticated:
-        username = request.user.username
-        student = Student.objects.get(student_id=username)
-        context = {'student': student}
-        return render(request, 'users/studdash.html', context)
-    else:
-        return HttpResponse("Username not found in session")
-    
-def upload_cv(request):
-    if request.method == 'POST' and request.FILES.get('cv'):
-        cv_file = request.FILES['cv']
-        student = request.user.username  # Assuming student is authenticated
-        student.cv = cv_file
-        student.save()
-        messages.success(request, 'CV uploaded successfully!')
-    return redirect('stud_dashboard')
-    
-def stud_apply_job(request):
-    return render(request, 'users/applyjob.html')
-
-def stud_results(request):
-    return render(request, 'users/results.html')
-
 def comp_dashboard(request):
     if request.user.is_authenticated:
         username = request.user.username
@@ -145,23 +145,23 @@ def apply_post(request):
     if request.user.is_authenticated:
         username = request.user.username
         company = Company.objects.get(company_id=username)
-    if request.method == 'POST':
-        job_title = request.POST.get('job_title')
-        job_requirement = request.POST.get('job_requirement')
-        job_type = request.POST.get('job_type')
-        job_package = request.POST.get('job_package')
-        last_date = request.POST.get('last_date')
-        job_package = request.POST.get('job_package')
-        
-        new_job = JobPosting.objects.create(
-            company_id = username,
-            job_title=job_title,
-            job_requirement=job_requirement,
-            job_type=job_type,
-            job_package=job_package,
-            last_date=last_date
-        )
-        messages.success(request, 'Job Posted successfully!')
-        return redirect('comp_dashboard')  # Redirect to a success page
-    return render(request, 'users/comp_jobpost.html', {'company': company})
+        context = {'company': company}
+        return render(request, 'users/comp_jobpost.html',context)
+    
+class ApplyPost(APIView):
+    def post(self, request):
+        if request.user.is_authenticated:
+            username = request.user.username
+        else:
+            return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
 
+        mutable_data = request.data.copy()
+        # Update the mutable copy with the company_id
+        mutable_data['company_id'] = username
+
+        serializer = JobSerializers(data=mutable_data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'success': 'Job Posted successfully!'}, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

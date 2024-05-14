@@ -63,14 +63,14 @@
                         {% endif %}
                     </div>
                 </div>
-                <form action="{% url 'upload_cv' %}" method="post" enctype="multipart/form-data" id="cv-upload-form">
+                <form action="upload_cv/" method="post" enctype="multipart/form-data" id="cv-upload-form">
                     {% csrf_token %}
                     <input type="file" name="cv" id="cv">
-                    <button class="cv-button">Upload/Update CV</button>
+                        <button class="cv-button">Upload/Update CV</button>
                 </form>
             </div>
             <div class="student-photo">
-                <img src="{{ MEDIA_URL }}{{ student.photo }}" alt="Student Photo">  
+                <img src="{{ MEDIA_URL }}{{ student.photo.url }}" alt="Student Photo">  
                 <a href="{% url 'logout' %}">
                     <button class="logout-button" id="logout-button">Logout</button>
                 </a>
