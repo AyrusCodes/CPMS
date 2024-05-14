@@ -27,7 +27,7 @@ urlpatterns = [
     path('student_login/student_reg/', user_views.student_reg, name='student_reg'),
     path('student_login/student_reg/studreg_details', user_views.studreg_details, name='studreg_details'),
     path('dashboard/', user_views.stud_dashboard, name='stud_dashboard'),
-    path('dashboard/upload_cv', user_views.upload_cv, name='upload_cv'),
+    path('dashboard/upload_cv/', user_views.UploadCV.as_view()),
     path('dashboard/stud_apply_job', user_views.stud_apply_job, name='stud_apply_job'),
     path('dashboard/stud_results', user_views.stud_results, name='stud_results'),
     path('dashboard/logout', user_views.logout, name='logout'),
@@ -37,9 +37,8 @@ urlpatterns = [
     path('company_login/comp_reg/compreg_details', user_views.compreg_details, name='compreg_details'),
     path('cdashboard/', user_views.comp_dashboard, name='comp_dashboard'),
     path('cdashboard/apply_post', user_views.apply_post, name='apply_post'),
-    path('cdashboard/add_job/', user_views.JobUploadForm.as_view()),
-    # path('cdashboard/', user_views.comp_dashboard, name='comp_dashboard'),
-
+    path('cdashboard/add_post/', user_views.ApplyPost.as_view()),
+    path('cdashboard/logout', user_views.logout, name='logout'),
     path('', include('cpmsapp.urls')),
 
  
