@@ -37,42 +37,25 @@
 
         <div class="job-postings">
             <h2>Job Postings</h2>
-            <form action="#" method="POST">
+            <form action="apply_job/" method="POST">
                 {% csrf_token %}
+                {% for job_with_name in job_postings %}
                 <div class="job-box">
-                    <input type="checkbox" id="job1" name="job1">
-                    <label for="job1">Software Engineer</label>
-                    <p>Company: Global Solutions</p>
-                    <p>Location: Chennai, India</p>
-                    <p>Type: On-Site.Full-time</p>
-                    <p>Package: $80,000/year</p>
-                    <p>Last Date to Apply: 2024-06-15</p>
+                    <input type="checkbox" id="job{{ job_with_name.job.id }}" name="job{{ job_with_name.job.id }}">
+                    <label for="job{{ job_with_name.job.job_id }}"><strong>{{ job_with_name.job.job_title }}</strong></label>
+                    <p>Company:<strong> {{ job_with_name.company_name }}</p></strong>
+                    <p>Title:<strong> {{ job_with_name.job.job_title }}</p></strong>
+                    <p>Type:<strong> {{ job_with_name.job.job_type }}</p></strong>
+                    <p>Requirement:<strong> {{ job_with_name.job.job_requirement }}</p></strong>
+                    <p>Package:<strong> {{ job_with_name.job.job_package }}</p></strong>
+                    <p>Last Date to Apply:<strong> {{ job_with_name.job.last_date }}</p></strong>
                 </div>
-                <div class="job-box">
-                    <input type="checkbox" id="job2" name="job2">
-                    <label for="job2">Backend Developer</label>
-                    <p>Company: IBM</p>
-                    <p>Location: Trivandrum, India</p>
-                    <p>Type: Hybrid.Full-time</p>
-                    <p>Package: $50,000/year</p>
-                    <p>Last Date to Apply: 2024-07-20</p>
-                </div>
-                <div class="job-box">
-                    <input type="checkbox" id="job3" name="job3">
-                    <label for="job3">Software Engineer</label>
-                    <p>Company: UST Global</p>
-                    <p>Location: Trivandrum, India</p>
-                    <p>Type: On-site.Full-time.Entry level</p>
-                    <p>Package: $40,000</p>
-                    <p>Last Date to Apply: 2024-06-15</p>
-                </div>
-                <!-- Add more job postings as needed -->
+                {% endfor %}
                 <button type="submit">Apply</button>
             </form>
         </div>
     </div>
 
-    {% comment %} <button class="logout-button" id="logout-button" href="{% url 'logout' %}">Logout</button> {% endcomment %}
     <script src="{% static 'users/applyjob.js' %}"></script>
 </body>
 </html>

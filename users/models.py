@@ -42,3 +42,7 @@ class JobPosting(models.Model):
 
     def __str__(self):
         return self.job_title
+
+class AppliedCandidates(models.Model):
+    student = models.ForeignKey(User, on_delete=models.CASCADE)
+    job_posting = models.ForeignKey(JobPosting, on_delete=models.CASCADE)

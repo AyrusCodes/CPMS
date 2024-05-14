@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from.models import Student,Company,JobPosting
+from.models import Student,Company,JobPosting,AppliedCandidates
 
 class StudentSerializers(serializers.ModelSerializer):
     class Meta:
@@ -15,3 +15,8 @@ class JobSerializers(serializers.ModelSerializer):
     class Meta:
         model = JobPosting
         fields = ['company_id','job_title', 'job_requirement', 'job_type', 'job_package', 'last_date']
+
+class CandidateSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = AppliedCandidates
+        fields = ['student', 'job_posting']

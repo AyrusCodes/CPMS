@@ -2,11 +2,11 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-from .models import JobPosting, Student,Company
+from .models import JobPosting, Student, Company, AppliedCandidates
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import JobSerializers, StudentSerializers, CompanySerializers
+from .serializers import JobSerializers, StudentSerializers, CompanySerializers, CandidateSerializers
 from django.contrib.auth.models import User
 
 class StudentUploadForm(APIView):
@@ -42,7 +42,24 @@ class CompanyUploadForm(APIView):
             messages.success(request, 'Company registered successfully!')
             return redirect('company_login')
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-      
+    
+class CandidatesApply(APIView):
+    def post(self, request):
+        selected_jobs = request.data.get('selected_jobs', [])
+        current_user = request.user
+        for job_id in selected_jobs:
+            try:
+                job = JobPosting.objects.get(id=job_id)
+                AppliedCandidates.objects.create(student=current_user, job_posting=job)
+            except JobPosting.DoesNotExist:
+                return Response({"error": "Job does not exist"}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = CandidateSerializers(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 def logout(request):
     return render(request, 'users/logout.html')
 
@@ -95,10 +112,28 @@ def stud_dashboard(request):
     else:
         return HttpResponse("Username not found in session")
     
-
 def stud_apply_job(request):
-    return render(request, 'users/applyjob.html')
+    if request.method == 'POST':
+        selected_jobs = request.POST.getlist('selected_jobs')
+        current_user = request.user
+        for job_id in selected_jobs:
+            job = JobPosting.objects.get(id=job_id)
+            AppliedCandidates.objects.create(student=current_user, job_posting=job)
+        return redirect('stud_dashboard')
+    else:
+        job_postings = JobPosting.objects.all()
+        job_postings_with_company_name = []
+        for job in job_postings:
+            company_name = Company.objects.get(company_id=job.company_id).company_name
+            job_with_company_name = {
+                'job': job,
+                'company_name': company_name
+            }
+            print(job_with_company_name)
+            job_postings_with_company_name.append(job_with_company_name)
+        return render(request, 'users/applyjob.html', {'job_postings': job_postings_with_company_name})
 
+    
 def stud_results(request):
     return render(request, 'users/results.html')
 
@@ -156,12 +191,18 @@ class ApplyPost(APIView):
             return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
 
         mutable_data = request.data.copy()
-        # Update the mutable copy with the company_id
         mutable_data['company_id'] = username
 
         serializer = JobSerializers(data=mutable_data)
         if serializer.is_valid():
             serializer.save()
-            return Response({'success': 'Job Posted successfully!'}, status=status.HTTP_201_CREATED)
+            messages.success(request, 'Job Posted successfully!')
+            return redirect('comp_dashboard')        
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+def posted_jobs(request):
+    if request.user.is_authenticated:
+        username = request.user.username
+        job_postings = JobPosting.objects.filter(company_id=username)
+        return render(request, 'users/posted_jobs.html', {'job_postings': job_postings})
