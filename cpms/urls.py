@@ -29,8 +29,7 @@ urlpatterns = [
     path('dashboard/', user_views.stud_dashboard, name='stud_dashboard'),
     path('dashboard/upload_cv/', user_views.UploadCV.as_view()),
     path('dashboard/stud_apply_job', user_views.stud_apply_job, name='stud_apply_job'),
-    path('dashboard/apply_job/', user_views.CandidatesApply.as_view()),
-
+    path('dashboard/apply_job/', user_views.ApplyJobView.as_view()),
     path('dashboard/stud_results', user_views.stud_results, name='stud_results'),
     path('dashboard/logout', user_views.logout, name='logout'),
 
@@ -41,6 +40,12 @@ urlpatterns = [
     path('cdashboard/apply_post', user_views.apply_post, name='apply_post'),
     path('cdashboard/add_post/', user_views.ApplyPost.as_view()),
     path('cdashboard/posted_jobs', user_views.posted_jobs, name='posted_jobs'),
+    path('cdashboard/stud_applications', user_views.stud_applications, name='stud_applications'),
+    path('cdashboard/accept_application/', user_views.AcceptApplicationView.as_view()),
+    path('cdashboard/stud_applications/reject_application', user_views.reject_application, name='reject_application'),
+    path('delete_job/<int:job_id>/', user_views.delete_job_posting, name='delete_job_posting'),
+
+
 
     path('cdashboard/logout', user_views.logout, name='logout'),
     path('admin_tools_stats/', include('admin_tools_stats.urls')),
