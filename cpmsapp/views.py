@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from .forms import ForgotPasswordForm
@@ -35,6 +36,7 @@ def student_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            messages.success(request, 'Student registered successfully!')
             return redirect('stud_dashboard')  
         else:
             return render(request, 'cpmsapp/stulogin.html', {'error_message': 'Invalid username or password'})
