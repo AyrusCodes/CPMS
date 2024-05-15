@@ -34,19 +34,19 @@ class UploadCV(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class ApplyJobView(APIView):
-    def post(self, request):
-        selected_job_ids = request.data.get('job_id', []) 
-        student_id = request.user.username  
-
+    def post(self, request): 
+        selected_job_ids = request.POST.getlist('job_ids[]')
+        print(selected_job_ids)
+        student_id = request.user.username
         applied_candidates_list = []
         for job_id in selected_job_ids:
             applied_candidate_data = {'student_id': student_id, 'job_id': job_id}
             applied_candidates_list.append(applied_candidate_data)
-
         serializer = CandidateSerializers(data=applied_candidates_list, many=True)
+        print(applied_candidates_list)
         if serializer.is_valid():
             serializer.save()
-            return Response({'message': 'Applied to selected job posts successfully!'}, status=status.HTTP_201_CREATED)
+            return redirect('stud_dashboard')
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
@@ -113,6 +113,9 @@ def stud_dashboard(request):
         return HttpResponse("Username not found in session")
     
 def stud_apply_job(request):
+        username = request.user.username
+        student = Student.objects.get(student_id=username)
+        notifications = Notification.objects.filter(student_id=student.student_id)
         job_postings = JobPosting.objects.all()
         job_postings_with_company_name = []
         for job in job_postings:
@@ -121,36 +124,30 @@ def stud_apply_job(request):
                 'job': job,
                 'company_name': company_name
             }
-            print(job_with_company_name)
             job_postings_with_company_name.append(job_with_company_name)
-        return render(request, 'users/applyjob.html', {'job_postings': job_postings_with_company_name})
+            context = {'student': student, 'notifications': notifications,'job_postings': job_postings_with_company_name}
+        return render(request, 'users/applyjob.html', context)
 
     
 def stud_results(request):
     username = request.user.username
+    student = Student.objects.get(student_id=username)
+    notifications = Notification.objects.filter(student_id=student.student_id)
+    
     applied_candidates = AppliedCandidates.objects.filter(student_id=username)
     job_postings_with_company_name = []
     for applied_candidate in applied_candidates:
-        if applied_candidate.accepted:
-            job_posting = applied_candidate.job_id  # Access the JobPosting object directly
-            if job_posting:
-                company_name = Company.objects.get(company_id=job_posting.company_id).company_name
-                job_with_company_name = {
-                    'job': job_posting,
-                    'company_name': company_name
-                }
-                job_postings_with_company_name.append(job_with_company_name)
-            return render(request, 'users/results.html', {'job_postings':job_postings_with_company_name})
-        else:
-            job_posting = applied_candidate.job_id  # Access the JobPosting object directly
-            if job_posting:
-                company_name = Company.objects.get(company_id=job_posting.company_id).company_name
-                job_with_company_name = {
-                    'job': job_posting,
-                    'company_name': company_name
-                }
-                job_postings_with_company_name.append(job_with_company_name)
-            return render(request, 'users/results.html', {'job_postings':job_postings_with_company_name})
+        job_posting = applied_candidate.job_id  
+        company_name = Company.objects.get(company_id=job_posting.company_id).company_name
+        accepted = applied_candidate.accepted 
+        job_with_company_name = {
+            'job': job_posting,
+            'company_name': company_name,
+            'accepted': accepted 
+        }
+        job_postings_with_company_name.append(job_with_company_name)
+    context = {'student': student,'job_postings': job_postings_with_company_name,'notifications': notifications }
+    return render(request, 'users/results.html', context)
         
 
 def comp_reg(request):
@@ -266,7 +263,7 @@ class AcceptApplicationView(APIView):
                 except AppliedCandidates.DoesNotExist:
                     return Response({'error': 'Application does not exist.'}, status=status.HTTP_404_NOT_FOUND)
             
-            return Response({'message': 'Applications accepted successfully!'}, status=status.HTTP_200_OK)
+            return redirect('stud_applications')
         else:
             return Response({'error': 'Invalid request method.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
     

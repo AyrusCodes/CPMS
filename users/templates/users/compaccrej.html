@@ -29,7 +29,7 @@
                 <td>{{ student.department }}</td>
                 <td>{{ student.batch }}</td>
                 <td>{{ student.cgpa }}</td>
-                <td><a href="{{ student.cv }}" target="_blank">View CV</a></td>
+                <td><a href="{{ MEDIA_URL }}{{ student.cv.url }}" target="_blank">View CV</a></td>
                 <td>
                     <form action="accept_application/" method="POST">
                         {% csrf_token %}

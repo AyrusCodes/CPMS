@@ -26,15 +26,18 @@
             {% for job_posting in job_postings %}
                 <div class="student-info">
                     <div class="result">    
-                        {% if job_posting.job %}
                         <h3>Company: {{ job_posting.company_name }}</h3>
-                            <p><strong>Congratulations!</p></strong>
-                            <strong><p>Position:</strong> {{ job_posting.job.job_title }}</p>
-                            <strong><p>Type:</strong> {{ job_posting.job.job_type }}</p>
-                            <strong><p>Salary:</strong> {{ job_posting.job.job_package }}</p>
+                        {% if job_posting.job %}
+                            {% if job_posting.accepted %}
+                                <p><strong>Congratulations!</strong></p>
+                                <p><strong>Position:</strong> {{ job_posting.job.job_title }}</p>
+                                <p><strong>Type:</strong> {{ job_posting.job.job_type }}</p>
+                                <p><strong>Salary:</strong> {{ job_posting.job.job_package }}</p>
+                            {% else %}
+                                <p>We regret to inform you that we have decided not to move forward with your application at this time</p>
+                            {% endif %}
                         {% else %}
-                            <h3>Company: {{ job_posting.company_name }}</h3>
-                            <p>We regret to inform you that we have decided not to move forward with your application at this time</p>
+                            <p>No job details available</p>
                         {% endif %}
                     </div>
                 </div>
@@ -48,12 +51,9 @@
         <h2>Notifications</h2>
         <div class="notification-content">
             <div class="notification">
-                <h4>Notification 1</h4>
-                <p>Details of notification 1.</p>
-            </div>
-            <div class="notification">
-                <h4>Notification 2</h4>
-                <p>Details of notification 2.</p>
+                {% for notification in notifications %}
+                <p><strong>></strong>   {{ notification.message }}</p>
+                {% endfor %}
             </div>
         </div>
     </div>

@@ -46,7 +46,7 @@ class JobPosting(models.Model):
         return self.job_title
 
 class AppliedCandidates(models.Model):
-    student_id = models.CharField(max_length=20, unique=True, null=True)
+    student_id = models.CharField(max_length=20, null=True)
     job_id = models.ForeignKey(JobPosting, on_delete=models.CASCADE)
     accepted = models.BooleanField(default=False)
 

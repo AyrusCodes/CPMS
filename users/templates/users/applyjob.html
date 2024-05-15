@@ -25,12 +25,9 @@
             <h2>Notifications</h2>
             <div class="notification-content">
                 <div class="notification">
-                    <h4>Notification 1</h4>
-                    <p>Details of notification 1.</p>
-                </div>
-                <div class="notification">
-                    <h4>Notification 2</h4>
-                    <p>Details of notification 2.</p>
+                    {% for notification in notifications %}
+                    <p><strong>></strong>   {{ notification.message }}</p>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -40,9 +37,9 @@
             <form action="apply_job/" method="POST">
                 {% csrf_token %}
                 {% for job_with_name in job_postings %}
-                <div class="job-box">
-                    <input type="checkbox" id="job{{ job_with_name.job.id }}" name="job{{ job_with_name.job.id }}">
-                    <label for="job{{ job_with_name.job.job_id }}"><strong>{{ job_with_name.job.job_title }}</strong></label>
+    <div class="job-box">
+        <input type="checkbox" id="job{{ job_with_name.job.job_id }}" name="job_ids[]" value="{{ job_with_name.job.job_id }}">
+        <label for="job{{ job_with_name.job.job_id }}"><strong>{{ job_with_name.job.job_title }}</strong></label>
                     <p>Company:<strong> {{ job_with_name.company_name }}</p></strong>
                     <p>Title:<strong> {{ job_with_name.job.job_title }}</p></strong>
                     <p>Type:<strong> {{ job_with_name.job.job_type }}</p></strong>
