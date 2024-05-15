@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class Department(models.Model):
     d_name = models.CharField(max_length=100, unique=True)
 
@@ -33,16 +34,28 @@ class Company(models.Model):
     
 class JobPosting(models.Model):
     job_id = models.AutoField(primary_key=True)
-    company_id = models.CharField(max_length=20, unique=True, null=True)
+    company_id = models.CharField(max_length=20, null=True)
     job_title = models.CharField(max_length=100)
     job_requirement = models.CharField(max_length=1000)
     job_type = models.CharField(max_length=100)
     job_package = models.CharField(max_length=100)
+    status = models.CharField(max_length=20, default='open')
     last_date = models.DateTimeField()
 
     def __str__(self):
         return self.job_title
 
 class AppliedCandidates(models.Model):
-    student = models.ForeignKey(User, on_delete=models.CASCADE)
-    job_posting = models.ForeignKey(JobPosting, on_delete=models.CASCADE)
+    student_id = models.CharField(max_length=20, unique=True, null=True)
+    job_id = models.ForeignKey(JobPosting, on_delete=models.CASCADE)
+    accepted = models.BooleanField(default=False)
+
+class Notification(models.Model):
+    student_id = models.CharField(max_length=20, null=True)
+    message = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.message
+
+    

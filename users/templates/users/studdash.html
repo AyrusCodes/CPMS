@@ -84,16 +84,17 @@
         <h2>Notifications</h2>
         <div class="notification-content">
             <div class="notification">
-                <h4>Notification 1</h4>
-                <p>Details of notification 1.</p>
-            </div>
-            <div class="notification">
-                <h4>Notification 2</h4>
-                <p>Details of notification 2.</p>
+                {% for notification in notifications %}
+                <p><strong>></strong>   {{ notification.message }}</p>
+                {% endfor %}
             </div>
         </div>
     </div>
 
-    <script src="{% static 'users/studdash.js' %}"></script>
+    <script src="{% static 'users/studdash.js' %}">
+        {% for notification in notifications %}
+            alert("{{ notification.message }}");
+        {% endfor %}
+    </script>
 </body>
 </html>

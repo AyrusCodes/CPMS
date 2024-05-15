@@ -30,7 +30,9 @@
                     <strong>Type:</strong> {{ job.job_type }}<br>
                     <strong>Package:</strong> {{ job.job_package }}<br>
                     <strong>Last Date to Apply:</strong> {{ job.last_date }}<br>
-                    <button onclick="deleteJobPosting('job{{ job.job_id }}')">Delete</button>
+                    <a href="{% url 'delete_job_posting' job.job_id %}">
+                        <button onclick="deleteJobPosting('job{{ job.job_id }}')">Delete</button>
+                    </a>
                 </li>
                 {% endfor %}
             </ul>

@@ -21,27 +21,24 @@
                 <li><a href="#" id="notifications-link">Notifications</a></li>
             </ul>
         </div>
-        {% comment %} <button class="logout-button" id="logout-button" href="{% url 'logout' %}">Logout</button>  {% endcomment %}
         <div class="student-details">
             <h1>RESULTS</h1>
-            <div class="student-info">
-                <!-- Result for Company: XYZ Corporation -->
-                <div class="result">
-                    <h3>Company: H&R BLOCK</h3>
-                    <p>Congratulations!</p>
-                    <p>Position: Junior Software Developer</p>
-                    <p>Location: Trivandrum</p>
-                    <p>Start Date: June 1, 2024</p>
-                    <p>Salary: $65,000 per annum</p>
+            {% for job_posting in job_postings %}
+                <div class="student-info">
+                    <div class="result">    
+                        {% if job_posting.job %}
+                        <h3>Company: {{ job_posting.company_name }}</h3>
+                            <p><strong>Congratulations!</p></strong>
+                            <strong><p>Position:</strong> {{ job_posting.job.job_title }}</p>
+                            <strong><p>Type:</strong> {{ job_posting.job.job_type }}</p>
+                            <strong><p>Salary:</strong> {{ job_posting.job.job_package }}</p>
+                        {% else %}
+                            <h3>Company: {{ job_posting.company_name }}</h3>
+                            <p>We regret to inform you that we have decided not to move forward with your application at this time</p>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
-            <div class="student-info">
-                <!-- Result for Company: ABC Enterprises -->
-                <div class="result">
-                    <h3>Company: UST Global</h3>
-                    <p>We regret to inform you that we have decided not to move forward with your application at this time</p>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 

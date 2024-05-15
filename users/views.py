@@ -1,13 +1,12 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
-from .models import JobPosting, Student, Company, AppliedCandidates
+from .models import JobPosting, Student, Company, AppliedCandidates, Notification
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import JobSerializers, StudentSerializers, CompanySerializers, CandidateSerializers
-from django.contrib.auth.models import User
+from .serializers import JobSerializers, StudentSerializers, CompanySerializers, CandidateSerializers, NotificationSerializers
 
 class StudentUploadForm(APIView):
     def post(self, request):
@@ -33,7 +32,24 @@ class UploadCV(APIView):
             return redirect('stud_dashboard')
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+class ApplyJobView(APIView):
+    def post(self, request):
+        selected_job_ids = request.data.get('job_id', []) 
+        student_id = request.user.username  
 
+        applied_candidates_list = []
+        for job_id in selected_job_ids:
+            applied_candidate_data = {'student_id': student_id, 'job_id': job_id}
+            applied_candidates_list.append(applied_candidate_data)
+
+        serializer = CandidateSerializers(data=applied_candidates_list, many=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'Applied to selected job posts successfully!'}, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
 class CompanyUploadForm(APIView):
     def post(self, request):
         serializer = CompanySerializers(data=request.data)
@@ -41,23 +57,6 @@ class CompanyUploadForm(APIView):
             serializer.save()
             messages.success(request, 'Company registered successfully!')
             return redirect('company_login')
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-class CandidatesApply(APIView):
-    def post(self, request):
-        selected_jobs = request.data.get('selected_jobs', [])
-        current_user = request.user
-        for job_id in selected_jobs:
-            try:
-                job = JobPosting.objects.get(id=job_id)
-                AppliedCandidates.objects.create(student=current_user, job_posting=job)
-            except JobPosting.DoesNotExist:
-                return Response({"error": "Job does not exist"}, status=status.HTTP_404_NOT_FOUND)
-        
-        serializer = CandidateSerializers(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 def logout(request):
@@ -107,20 +106,13 @@ def stud_dashboard(request):
     if request.user.is_authenticated:
         username = request.user.username
         student = Student.objects.get(student_id=username)
-        context = {'student': student}
+        notifications = Notification.objects.filter(student_id=student.student_id)
+        context = {'student': student, 'notifications': notifications }
         return render(request, 'users/studdash.html', context)
     else:
         return HttpResponse("Username not found in session")
     
 def stud_apply_job(request):
-    if request.method == 'POST':
-        selected_jobs = request.POST.getlist('selected_jobs')
-        current_user = request.user
-        for job_id in selected_jobs:
-            job = JobPosting.objects.get(id=job_id)
-            AppliedCandidates.objects.create(student=current_user, job_posting=job)
-        return redirect('stud_dashboard')
-    else:
         job_postings = JobPosting.objects.all()
         job_postings_with_company_name = []
         for job in job_postings:
@@ -135,7 +127,31 @@ def stud_apply_job(request):
 
     
 def stud_results(request):
-    return render(request, 'users/results.html')
+    username = request.user.username
+    applied_candidates = AppliedCandidates.objects.filter(student_id=username)
+    job_postings_with_company_name = []
+    for applied_candidate in applied_candidates:
+        if applied_candidate.accepted:
+            job_posting = applied_candidate.job_id  # Access the JobPosting object directly
+            if job_posting:
+                company_name = Company.objects.get(company_id=job_posting.company_id).company_name
+                job_with_company_name = {
+                    'job': job_posting,
+                    'company_name': company_name
+                }
+                job_postings_with_company_name.append(job_with_company_name)
+            return render(request, 'users/results.html', {'job_postings':job_postings_with_company_name})
+        else:
+            job_posting = applied_candidate.job_id  # Access the JobPosting object directly
+            if job_posting:
+                company_name = Company.objects.get(company_id=job_posting.company_id).company_name
+                job_with_company_name = {
+                    'job': job_posting,
+                    'company_name': company_name
+                }
+                job_postings_with_company_name.append(job_with_company_name)
+            return render(request, 'users/results.html', {'job_postings':job_postings_with_company_name})
+        
 
 def comp_reg(request):
     if request.method == 'POST':
@@ -164,7 +180,7 @@ def compreg_details(request):
             industry_type=industry_type
         )
         messages.success(request, 'Company registered successfully!')
-        return redirect('company_login')  # Redirect to a success page
+        return redirect('company_login') 
     return render(request, 'users/compregform.html')
 
 def comp_dashboard(request):
@@ -197,6 +213,10 @@ class ApplyPost(APIView):
         if serializer.is_valid():
             serializer.save()
             messages.success(request, 'Job Posted successfully!')
+            students = Student.objects.all()
+            message = 'A new job has been posted. Check it out!'
+            for student in students:
+                Notification.objects.create(student_id=student.student_id, message=message)
             return redirect('comp_dashboard')        
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -206,3 +226,50 @@ def posted_jobs(request):
         username = request.user.username
         job_postings = JobPosting.objects.filter(company_id=username)
         return render(request, 'users/posted_jobs.html', {'job_postings': job_postings})
+    
+    
+def delete_job_posting(request, job_id):
+    job = get_object_or_404(JobPosting, pk=job_id)
+    job.delete()
+    return redirect('posted_jobs')
+
+def stud_applications(request):
+    username = request.user.username
+    job_postings = JobPosting.objects.filter(company_id=username)
+    applied_candidates = AppliedCandidates.objects.filter(job_id__in=job_postings)
+    student_details = Student.objects.filter(student_id__in=[candidate.student_id for candidate in applied_candidates])
+    return render(request, 'users/compaccrej.html', {'students': student_details})
+
+class AcceptApplicationView(APIView):
+    def post(self, request):
+        if request.method == 'POST':
+            username = request.user.username
+            job_postings = JobPosting.objects.filter(company_id=username)
+            applied_candidates = AppliedCandidates.objects.filter(job_id__in=job_postings)
+            student_ids = [candidate.student_id for candidate in applied_candidates]
+            
+            for student_id in student_ids:
+                try:
+                    applied_candidate = AppliedCandidates.objects.get(student_id=student_id, job_id__in=job_postings)
+                    applied_candidate.accepted = True
+                    applied_candidate.save()
+                    notification_data = {
+                        'student_id': applied_candidate.student_id,
+                        'message': 'Your application has been accepted.'
+                    }
+                    serializer = NotificationSerializers(data=notification_data)
+                    if serializer.is_valid():
+                        serializer.save()
+                    else:
+                        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+                except AppliedCandidates.DoesNotExist:
+                    return Response({'error': 'Application does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+            
+            return Response({'message': 'Applications accepted successfully!'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Invalid request method.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    
+def reject_application(request):
+    Notification.objects.create(student=AppliedCandidates.student_id, message='Your application has been rejected.')
+    return redirect('stud_applications')

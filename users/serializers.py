@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from.models import Student,Company,JobPosting,AppliedCandidates
+from.models import Student,Company,JobPosting,AppliedCandidates,Notification
 
 class StudentSerializers(serializers.ModelSerializer):
     class Meta:
@@ -19,4 +19,11 @@ class JobSerializers(serializers.ModelSerializer):
 class CandidateSerializers(serializers.ModelSerializer):
     class Meta:
         model = AppliedCandidates
-        fields = ['student', 'job_posting']
+        fields = ['student_id', 'job_id', 'accepted']
+
+class NotificationSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = ['student_id', 'message', 'created_at']
+
+

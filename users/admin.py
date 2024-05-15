@@ -17,7 +17,9 @@ class JobPostingAdmin(admin.ModelAdmin):
     list_filter = ['job_type', 'job_package'] 
 
 class AppliedCandidatesAdmin(admin.ModelAdmin):
-     list_display = ('student', 'job_posting') 
+     list_display = ['student_id', 'job_id','accepted']
+     search_fields = ['student_id','job_id','accepted']
+     list_filter = ['student_id', 'job_id','accepted'] 
 
 admin.site.register(Department)
 admin.site.register(JobPosting,JobPostingAdmin)
